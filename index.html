@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GoMedic — Tu clínica, automatizada con IA</title>
+<meta name="description" content="Automatizá turnos, pacientes y seguimiento con sistemas de IA integrados a tu clínica. Agendas, CRM y web a medida." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#081F1C;
+    --bg-mid:#0C2E29;
+    --card-bg: rgba(255,255,255,0.035);
+    --card-border: rgba(255,255,255,0.09);
+    --accent:#2FD9A8;
+    --accent-soft:#6EE7C3;
+    --text:#F3FBF8;
+    --text-muted:#9FC7BE;
+    --line: rgba(255,255,255,0.08);
+    --radius: 14px;
+    --serif: 'Fraunces', serif;
+    --sans: 'Plus Jakarta Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, black 40%, transparent 90%);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{max-width:1200px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter: blur(12px);
+    background: rgba(8,31,28,0.72);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 24px; max-width:1200px; margin:0 auto;
+  }
+  .logo{
+    font-family:var(--serif); font-weight:600; font-size:1.35rem; letter-spacing:-0.01em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .logo .dot{width:8px; height:8px; border-radius:50%; background:var(--accent); display:inline-block; box-shadow:0 0 12px var(--accent);}
+  .nav-links{display:flex; gap:32px; font-size:0.92rem; color:var(--text-muted);}
+  .nav-links a{transition:color .2s;}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{
+    background:var(--accent); color:#052A24; font-weight:600; font-size:0.9rem;
+    padding:10px 20px; border-radius:999px; transition:transform .15s, box-shadow .15s;
+  }
+  .nav-cta:hover{transform:translateY(-1px); box-shadow:0 8px 24px -8px rgba(47,217,168,0.6);}
+  .mobile-toggle{display:none;}
+
+  /* BADGE */
+  .badge{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--card-border); background:var(--card-bg);
+    padding:7px 16px; border-radius:999px;
+    font-family:var(--mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--accent-soft);
+  }
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);}
+
+  /* HERO */
+  .hero{padding:96px 0 64px;}
+  .hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:start;}
+  h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(2.4rem, 5vw, 4rem);
+    line-height:1.05; letter-spacing:-0.02em; margin:24px 0 20px;
+  }
+  h1 em{font-style:italic; font-weight:500; color:var(--accent-soft);}
+  .hero-sub{
+    font-size:1.08rem; color:var(--text-muted); max-width:520px; margin-bottom:32px;
+  }
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--accent); color:#052A24; font-weight:600; font-size:0.95rem;
+    padding:14px 26px; border-radius:10px; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s, box-shadow .15s; border:none; cursor:pointer;
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 28px -10px rgba(47,217,168,0.55);}
+  .btn-secondary{
+    border:1px solid var(--card-border); color:var(--text); font-weight:600; font-size:0.95rem;
+    padding:14px 26px; border-radius:10px; background:transparent; transition:background .15s, border-color .15s;
+  }
+  .btn-secondary:hover{background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.2);}
+
+  .stat-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  }
+  .stat-card{
+    background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius);
+    padding:22px; transition:border-color .2s, transform .2s;
+  }
+  .stat-card:hover{border-color:rgba(47,217,168,0.4); transform:translateY(-2px);}
+  .stat-icon{color:var(--accent); margin-bottom:14px;}
+  .stat-num{font-family:var(--serif); font-size:1.7rem; font-weight:600; margin-bottom:4px;}
+  .stat-label{font-size:0.85rem; color:var(--text-muted);}
+
+  /* SECTION HEADER */
+  .section{padding:88px 0;}
+  .section-head{max-width:640px; margin-bottom:52px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--accent); margin-bottom:14px; display:block;
+  }
+  h2{font-family:var(--serif); font-weight:600; font-size:clamp(1.8rem,3.4vw,2.6rem); letter-spacing:-0.01em; margin-bottom:14px;}
+  .section-sub{color:var(--text-muted); font-size:1.02rem;}
+
+  /* FEATURES */
+  .features{border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(255,255,255,0.012);}
+  .feature-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .feature-card{
+    background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius);
+    padding:28px 24px; transition:transform .2s, border-color .2s;
+  }
+  .feature-card:hover{transform:translateY(-4px); border-color:rgba(47,217,168,0.35);}
+  .feature-icon{
+    width:44px; height:44px; border-radius:10px; background:rgba(47,217,168,0.1);
+    display:flex; align-items:center; justify-content:center; color:var(--accent); margin-bottom:18px;
+  }
+  .feature-card h3{font-family:var(--serif); font-weight:600; font-size:1.15rem; margin-bottom:10px;}
+  .feature-card p{color:var(--text-muted); font-size:0.92rem;}
+
+  /* DEMO CHAT */
+  .demo-grid{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:center;}
+  .demo-copy .checklist{list-style:none; margin-top:24px; display:flex; flex-direction:column; gap:14px;}
+  .demo-copy .checklist li{display:flex; gap:12px; align-items:flex-start; color:var(--text-muted); font-size:0.95rem;}
+  .demo-copy .checklist svg{flex-shrink:0; color:var(--accent); margin-top:2px;}
+  .phone{
+    background:var(--bg-mid); border:1px solid var(--card-border); border-radius:24px;
+    padding:20px; max-width:380px; margin:0 auto; box-shadow:0 40px 80px -30px rgba(0,0,0,0.6);
+  }
+  .phone-head{
+    display:flex; align-items:center; gap:10px; padding-bottom:14px; margin-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .phone-avatar{
+    width:36px; height:36px; border-radius:50%; background:var(--accent);
+    display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-weight:600; color:#052A24;
+  }
+  .phone-name{font-weight:600; font-size:0.92rem;}
+  .phone-status{font-size:0.75rem; color:var(--accent-soft);}
+  .chat-body{display:flex; flex-direction:column; gap:10px; min-height:280px;}
+  .bubble{
+    max-width:78%; padding:10px 14px; border-radius:14px; font-size:0.88rem; opacity:0; transform:translateY(8px);
+    animation: bubbleIn .4s ease forwards;
+  }
+  .bubble.in{background:rgba(255,255,255,0.06); border:1px solid var(--card-border); align-self:flex-start; border-bottom-left-radius:4px;}
+  .bubble.out{background:var(--accent); color:#052A24; align-self:flex-end; border-bottom-right-radius:4px; font-weight:500;}
+  @keyframes bubbleIn{to{opacity:1; transform:translateY(0);}}
+  .typing{
+    display:flex; gap:4px; align-self:flex-start; padding:12px 14px; background:rgba(255,255,255,0.06);
+    border:1px solid var(--card-border); border-radius:14px; border-bottom-left-radius:4px; width:fit-content;
+    opacity:0; animation: bubbleIn .4s ease forwards;
+  }
+  .typing span{width:6px; height:6px; border-radius:50%; background:var(--text-muted); animation: blink 1.2s infinite;}
+  .typing span:nth-child(2){animation-delay:.2s;}
+  .typing span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.25;} 40%{opacity:1;}}
+
+  /* PROCESS */
+  .process-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px;}
+  .process-step{position:relative; padding-top:8px;}
+  .process-num{
+    font-family:var(--mono); color:var(--accent); font-size:0.85rem; letter-spacing:0.05em;
+    display:block; margin-bottom:16px;
+  }
+  .process-step h3{font-family:var(--serif); font-weight:600; font-size:1.3rem; margin-bottom:10px;}
+  .process-step p{color:var(--text-muted); font-size:0.95rem;}
+  .process-line{position:absolute; top:0; left:0; width:100%; height:1px; background:var(--line);}
+
+  /* CONTACT */
+  .contact{border-top:1px solid var(--line);}
+  .contact-grid{display:grid; grid-template-columns:0.85fr 1.15fr; gap:56px;}
+  .contact-info h2{margin-bottom:16px;}
+  .contact-details{margin-top:32px; display:flex; flex-direction:column; gap:18px;}
+  .contact-detail{display:flex; gap:12px; align-items:center; color:var(--text-muted); font-size:0.92rem;}
+  .contact-detail svg{color:var(--accent);}
+  form{background:var(--card-bg); border:1px solid var(--card-border); border-radius:var(--radius); padding:32px;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  .field{display:flex; flex-direction:column; gap:6px; margin-bottom:16px;}
+  .field label{font-size:0.82rem; color:var(--text-muted); font-family:var(--mono); letter-spacing:0.03em;}
+  .field input, .field textarea{
+    background:rgba(0,0,0,0.2); border:1px solid var(--card-border); border-radius:8px; padding:12px 14px;
+    color:var(--text); font-family:var(--sans); font-size:0.95rem; outline:none; transition:border-color .2s;
+    resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--accent);}
+  .field input:focus-visible, .field textarea:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .form-submit{width:100%; justify-content:center; margin-top:6px;}
+  .form-status{margin-top:14px; font-size:0.88rem; display:none;}
+  .form-status.show{display:block;}
+  .form-status.ok{color:var(--accent-soft);}
+  .form-status.err{color:#F2A19A;}
+
+  footer{border-top:1px solid var(--line); padding:40px 0; }
+  .footer-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+  .footer-row p{color:var(--text-muted); font-size:0.85rem;}
+
+  @media (max-width: 860px){
+    .nav-links{display:none;}
+    .hero-grid, .demo-grid, .contact-grid{grid-template-columns:1fr;}
+    .feature-grid{grid-template-columns:1fr 1fr;}
+    .process-grid{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    .demo-grid{gap:40px;}
+    .demo-grid > *:first-child{order:2;}
+    .demo-grid > *:last-child{order:1;}
+  }
+  @media (max-width: 520px){
+    .feature-grid{grid-template-columns:1fr;}
+    .hero{padding:64px 0 40px;}
+    nav{padding:16px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="logo"><span class="dot"></span>GoMedic</div>
+    <div class="nav-links">
+      <a href="#features">Qué hacemos</a>
+      <a href="#demo">Cómo funciona</a>
+      <a href="#proceso">Proceso</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+    <a href="#contacto" class="nav-cta">Consultar</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge"><span class="dot"></span>Sistemas de IA para clínicas</span>
+      <h1>Tu clínica, <em>automatizada</em> con IA</h1>
+      <p class="hero-sub">Automatizá turnos, pacientes y seguimiento con sistemas de IA integrados a tu agenda, tu web y tu CRM. Todo conectado, todo funcionando mientras no estás mirando.</p>
+      <div class="cta-row">
+        <a href="#contacto" class="btn-primary">Consultar
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#demo" class="btn-secondary">Ver cómo funciona</a>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <div class="stat-num">+20h/sem</div>
+        <div class="stat-label">Horas liberadas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg></div>
+        <div class="stat-num">+35%</div>
+        <div class="stat-label">Turnos reservados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></div>
+        <div class="stat-num">&lt;1min</div>
+        <div class="stat-label">Tiempo de respuesta</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Disponibilidad</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap section">
+    <div class="section-head">
+      <span class="eyebrow">Qué hacemos</span>
+      <h2>Todo lo que tu clínica necesita, conectado</h2>
+      <p class="section-sub">No vendemos un chatbot suelto. Armamos el sistema completo: la web, la agenda y el seguimiento de pacientes trabajando juntos.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg></div>
+        <h3>Agendas y turnos</h3>
+        <p>Pacientes reservan, cambian y cancelan turnos solos, por WhatsApp o web, sin que nadie de tu equipo mueva un dedo.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <h3>CRM de pacientes</h3>
+        <p>Historial, seguimiento y recordatorios centralizados. Sabés en qué etapa está cada paciente sin buscar en cinco planillas.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3>Automatizaciones con IA</h3>
+        <p>Confirmaciones, recordatorios, respuestas a consultas frecuentes y derivaciones, todo corriendo solo, 24/7.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 21V9"/></svg></div>
+        <h3>Web a medida</h3>
+        <p>Sitio propio, en tu dominio, pensado para convertir visitas en turnos reservados, no solo para verse lindo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="demo">
+  <div class="wrap demo-grid">
+    <div class="demo-copy">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2>La IA agenda el turno mientras vos atendés al paciente de al lado</h2>
+      <p class="section-sub">Así se ve una conversación real: el paciente escribe, la IA entiende, consulta la agenda y confirma. Sin cadenas de mensajes, sin llamados perdidos.</p>
+      <ul class="checklist">
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Entiende el pedido en lenguaje natural</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Consulta disponibilidad real en tu agenda</li>
+        <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Confirma y carga el turno solo</li>
+      </ul>
+    </div>
+    <div class="phone">
+      <div class="phone-head">
+        <div class="phone-avatar">G</div>
+        <div>
+          <div class="phone-name">GoMedic Asistente</div>
+          <div class="phone-status">en línea</div>
+        </div>
+      </div>
+      <div class="chat-body" id="chatBody"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="proceso" style="border-top:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Proceso</span>
+      <h2>Así lo implementamos, en tres etapas</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="process-line"></div>
+        <span class="process-num">01 · Diagnóstico</span>
+        <h3>Vemos cómo trabaja tu clínica hoy</h3>
+        <p>Relevamos tu agenda, tu flujo de turnos y dónde se pierde tiempo o pacientes.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-line"></div>
+        <span class="process-num">02 · Implementación</span>
+        <h3>Armamos el sistema conectado</h3>
+        <p>Web, agenda y automatizaciones de IA integradas a las herramientas que ya usás.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-line"></div>
+        <span class="process-num">03 · Seguimiento</span>
+        <h3>Ajustamos con datos reales</h3>
+        <p>Medimos turnos reservados y tiempo liberado, y afinamos el sistema con el uso real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section contact" id="contacto">
+  <div class="wrap contact-grid">
+    <div class="contact-info">
+      <span class="eyebrow">Contacto</span>
+      <h2>Contanos cómo trabaja tu clínica hoy</h2>
+      <p class="section-sub">Dejanos tus datos y te contactamos para ver si GoMedic tiene sentido para vos. Sin vueltas.</p>
+      <div class="contact-details">
+        <div class="contact-detail"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>hola@gomedic.com.ar</div>
+        <div class="contact-detail"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5a2 2 0 012-2h3l2 5-2.5 1.5a11 11 0 005 5L14 12l5 2v3a2 2 0 01-2 2A16 16 0 013 5z"/></svg>Respondemos en menos de 24hs</div>
+      </div>
+    </div>
+    <form id="contactForm" novalidate>
+      <div class="form-row">
+        <div class="field">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" required autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="clinica">Nombre de la clínica</label>
+          <input type="text" id="clinica" name="clinica" autocomplete="organization" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="mensaje">Contanos brevemente qué necesitás</label>
+        <textarea id="mensaje" name="mensaje" rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn-primary form-submit" id="submitBtn">
+        Enviar consulta
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <p class="form-status" id="formStatus"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <div class="logo" style="font-size:1.05rem;"><span class="dot"></span>GoMedic</div>
+    <p>© <span id="year"></span> GoMedic. Sistemas de IA para clínicas.</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // --- Demo chat animado ---
+  const chatScript = [
+    { side:'in', text:'Hola! Quería sacar un turno con la Dra. Pérez para esta semana' },
+    { side:'out', text:'¡Hola! Claro. Tengo lugar el jueves 15:30 o el viernes 10:00. ¿Cuál te queda mejor?' },
+    { side:'in', text:'El viernes a las 10 está perfecto' },
+    { side:'out', text:'Listo, turno confirmado para el viernes 10:00 con la Dra. Pérez. Te mando recordatorio un día antes ✅' },
+  ];
+  const chatBody = document.getElementById('chatBody');
+  let chatStarted = false;
+
+  function runChat(){
+    if(chatStarted) return;
+    chatStarted = true;
+    chatBody.innerHTML = '';
+    let delay = 200;
+    chatScript.forEach((msg, i) => {
+      const typingDelay = delay;
+      setTimeout(() => {
+        const typing = document.createElement('div');
+        typing.className = 'typing';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        chatBody.appendChild(typing);
+        chatBody.scrollTop = chatBody.scrollHeight;
+        setTimeout(() => {
+          typing.remove();
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble ' + msg.side;
+          bubble.textContent = msg.text;
+          chatBody.appendChild(bubble);
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 900);
+      }, typingDelay);
+      delay += 1500;
+    });
+  }
+
+  const demoSection = document.getElementById('demo');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) runChat();
+    });
+  }, { threshold: 0.4 });
+  observer.observe(demoSection);
+
+  // --- Formulario de contacto ---
+  // TODO: reemplazar por la URL del webhook de n8n cuando esté listo.
+  const WEBHOOK_URL = '';
+
+  const form = document.getElementById('contactForm');
+  const statusEl = document.getElementById('formStatus');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.className = 'form-status';
+    statusEl.textContent = '';
+
+    const data = {
+      nombre: form.nombre.value.trim(),
+      clinica: form.clinica.value.trim(),
+      email: form.email.value.trim(),
+      mensaje: form.mensaje.value.trim(),
+    };
+
+    if (!data.nombre || !data.email) {
+      statusEl.textContent = 'Completá al menos tu nombre y email.';
+      statusEl.className = 'form-status show err';
+      return;
+    }
+
+    if (!WEBHOOK_URL) {
+      // Todavía no conectamos el webhook de n8n.
+      statusEl.textContent = 'Formulario listo. Falta conectar el webhook para guardar los datos.';
+      statusEl.className = 'form-status show err';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Enviando...';
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('Error de red');
+      statusEl.textContent = '¡Gracias! Te vamos a contactar a la brevedad.';
+      statusEl.className = 'form-status show ok';
+      form.reset();
+    } catch (err) {
+      statusEl.textContent = 'Hubo un problema al enviar. Probá de nuevo en unos minutos.';
+      statusEl.className = 'form-status show err';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }
+  });
+</script>
+
+</body>
+</html>
