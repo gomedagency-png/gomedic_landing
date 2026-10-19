@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoMedic — Tu clínica, automatizada con IA</title>
+<meta name="description" content="Sistemas de IA para clínicas: turnos, pacientes y seguimiento funcionando solos, integrados a tu agenda, tu web y tu CRM.">
+<meta property="og:title" content="GoMedic — Tu clínica, automatizada con IA">
+<meta property="og:description" content="Turnos, pacientes y seguimiento funcionando solos, mientras tu equipo se dedica a atender.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gomedicagency.com/">
+<meta property="og:locale" content="es_AR">
+<meta name="theme-color" content="#F5F3EC">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23081F1C'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%232FD9A8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F3EC; --paper-alt:#ECE9DF; --line:#DDD9CC; --card-line:#E4E0D4;
+  --ink:#081F1C; --ink-muted:#4D5E5A; --accent-ink:#12705A;
+  --bg-alt:#0B221F; --surface:#112724; --border:#1E3331; --bubble:#1A3833;
+  --text:#F3FBF8; --text-muted:#88ADA6; --text-soft:#C9DDD8;
+  --accent:#2FD9A8; --accent-light:#6EE7C3; --mint-tint:#D7F4E8;
+  --peach:#F6C3A8; --peach-tint:#FBE3D6;
+  --serif:'Fraunces', Georgia, serif; --sans:'Inter', system-ui, sans-serif; --mono:'JetBrains Mono', monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--accent-ink)} a:hover{color:var(--ink)}
+button,a,input,textarea{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1240px;margin:0 auto}
+.serif{font-family:var(--serif)}
+.mono{font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
+em.k{font-style:italic;font-weight:500}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block;flex:none}
+.pulse{animation:pulse 1.8s ease-out infinite}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* animaciones */
+@keyframes float{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-14px) rotate(var(--r,0deg))}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:520}to{stroke-dashoffset:0}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,217,168,.6)}100%{box-shadow:0 0 0 9px rgba(47,217,168,0)}}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slide{0%,15%{transform:translateX(0)}45%,60%{transform:translateX(calc(100% + 12px))}90%,100%{transform:translateX(calc(200% + 24px))}}
+@keyframes rise{from{opacity:0;transform:translateY(48px)}to{opacity:1;transform:none}}
+.pop{animation:pop .5s var(--ease) both}
+.float{animation:float 7s ease-in-out infinite}
+@supports (animation-timeline: view()){
+  .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 45%}
+}
+.paused *,.paused *::before,.paused *::after{animation-play-state:paused !important}
+.paused .reveal{animation-play-state:running !important}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:40;background:rgba(245,243,236,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .wrap{padding:0 24px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{display:inline-flex;align-items:baseline;gap:7px;text-decoration:none;color:var(--ink)}
+.logo span.w{font-family:var(--serif);font-weight:700;font-size:23px;letter-spacing:-.01em}
+.navlinks{display:flex;gap:32px}
+.navlinks a{color:var(--ink-muted);text-decoration:none;font-size:15px;font-weight:500}
+.navlinks a:hover{color:var(--ink)}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;text-decoration:none}
+.icon-btn:hover{color:var(--accent-ink);border-color:#C9C5B6}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:999px;text-decoration:none;font-family:inherit;font-weight:500;cursor:pointer;border:1px solid transparent;transition:transform .2s var(--ease),background .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-ink{background:var(--ink);color:var(--text)} .btn-ink:hover{color:var(--text);background:#0F2C28}
+.btn-outline{border-color:#C9C5B6;color:var(--ink)} .btn-outline:hover{color:var(--ink);border-color:var(--ink)}
+.btn-accent{background:var(--accent);color:var(--ink);font-weight:600} .btn-accent:hover{color:var(--ink);background:#22BD90}
+.btn-sm{height:44px;padding:0 20px;font-size:15px}
+.btn-lg{height:56px;padding:0 28px;font-size:16px}
+@media (max-width:860px){.navlinks{display:none}}
+@media (max-width:420px){.nav-cta-text{display:none}.btn-sm.nav-cta{padding:0 14px}}
+
+/* hero */
+.hero{padding:80px 24px 0;text-align:center}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;color:var(--accent-ink)}
+.pill .dot{width:7px;height:7px}
+.h1{font-family:var(--serif);font-weight:600;font-size:clamp(54px,9.4vw,138px);line-height:.94;letter-spacing:-.04em;margin:32px auto 0;max-width:1120px}
+.underline{position:relative;display:inline-block;font-style:italic;font-weight:500;color:var(--accent-ink);padding:0 .04em}
+.underline svg{position:absolute;left:2%;bottom:-.12em;width:96%;height:.24em;overflow:visible}
+.underline path{stroke-dasharray:520;stroke-dashoffset:520;animation:draw 1.4s .5s var(--ease) forwards}
+.hero .lead{font-size:clamp(17px,1.6vw,21px);line-height:1.55;color:var(--ink-muted);max-width:580px;margin:40px auto 0}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:36px}
+
+.stage{max-width:1240px;margin:72px auto 0;position:relative;height:640px;border-radius:40px 40px 0 0;background:var(--mint-tint);overflow:hidden}
+.blob{position:absolute;border-radius:50%}
+.fcard{position:absolute;text-align:left}
+.agenda{left:6%;top:96px;width:270px;padding:20px;border-radius:22px;background:#fff;box-shadow:0 24px 60px rgba(8,31,28,.14);--r:-5deg}
+.agenda .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.agenda .rows{display:flex;flex-direction:column;gap:8px;font-size:13px}
+.agenda .row{display:flex;gap:10px;align-items:center}
+.agenda .t{width:44px;color:var(--ink-muted)}
+.slot{flex:1;padding:8px 10px;border-radius:10px;background:var(--paper-alt)}
+.slot.free{padding:7px 10px;border:1px dashed #B9B4A3;background:none;color:var(--ink-muted)}
+.slot.ok{background:var(--accent);color:var(--ink);font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.phone{position:absolute;left:50%;top:56px;width:330px;margin-left:-165px;transform:rotate(-2deg)}
+.phone .body{height:640px;border-radius:48px;background:var(--ink);padding:12px;box-shadow:0 40px 80px rgba(8,31,28,.28)}
+.phone .screen{height:100%;border-radius:38px;background:var(--bg-alt);display:flex;flex-direction:column;overflow:hidden;text-align:left}
+.chat-head{display:flex;align-items:center;gap:12px;padding:26px 20px 16px;border-bottom:1px solid var(--border)}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--accent);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:17px;flex:none}
+.chat-msgs{flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;padding:18px 16px}
+.bubble{max-width:84%;padding:11px 14px;font-size:14px;line-height:1.45;animation:pop .45s var(--ease) both}
+.bubble.ia{align-self:flex-start;border-radius:18px 18px 18px 5px;background:var(--bubble);color:var(--text)}
+.bubble.p{align-self:flex-end;border-radius:18px 18px 5px 18px;background:var(--accent);color:var(--ink)}
+.typing{align-self:flex-start;display:inline-flex;gap:5px;padding:14px 16px;border-radius:18px 18px 18px 5px;background:var(--bubble)}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--text-muted);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+.chat-input{margin:0 14px 22px;height:46px;border-radius:999px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;padding:0 18px;color:var(--text-muted);font-size:13px}
+.hours{right:7%;top:130px;width:240px;padding:24px;border-radius:24px;background:var(--ink);color:var(--text);box-shadow:0 24px 60px rgba(8,31,28,.22);--r:4deg;animation-duration:8s;animation-delay:1s}
+.reminder{right:11%;bottom:120px;display:inline-flex;align-items:center;gap:12px;padding:14px 20px 14px 14px;border-radius:999px;background:#fff;box-shadow:0 18px 44px rgba(8,31,28,.14);--r:-2deg;animation-duration:6s;animation-delay:.4s}
+@media (max-width:860px){.hide-sm{display:none !important}.stage{height:720px}}
+
+/* secciones */
+.sec{padding:136px 24px}
+.dark{background:var(--ink);color:var(--text)}
+.round{border-radius:48px 48px 0 0}
+.overlap{margin-top:-48px;position:relative}
+.h2{font-family:var(--serif);font-weight:600;font-size:clamp(48px,7vw,108px);line-height:.95;letter-spacing:-.04em;margin:0}
+.light-em{color:var(--accent-ink)} .dark-em{color:var(--accent-light)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:40px}
+.muted{color:var(--ink-muted)} .dmuted{color:var(--text-muted)}
+
+/* datos */
+.stats-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:64px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));border-top:1px solid var(--border)}
+.stat{padding:36px 28px 8px;border-right:1px solid var(--border)}
+.stat:first-child{padding-left:0}.stat:last-child{border-right:none}
+.stat .n{font-family:var(--serif);font-weight:600;font-size:clamp(64px,6.6vw,104px);line-height:1;letter-spacing:-.04em}
+.stat .n span{font-size:.5em;color:var(--accent)}
+.stat .l{margin-top:16px;color:var(--text-muted);font-size:15px}
+@media (max-width:520px){.stat{padding-left:0;border-right:none;border-bottom:1px solid var(--border);padding-bottom:28px}}
+
+/* servicios */
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:56px 0 28px}
+.tab{height:48px;padding:0 22px;border-radius:999px;border:1px solid #C9C5B6;background:transparent;color:var(--ink);font-family:inherit;font-size:15px;font-weight:500;cursor:pointer;transition:background .2s,color .2s}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--text);border-color:var(--ink)}
+.svc{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:24px}
+.svc-text{padding:44px;border-radius:32px;background:#fff;border:1px solid var(--card-line);display:flex;flex-direction:column;justify-content:space-between;gap:32px;min-height:460px}
+.svc-text h3{font-family:var(--serif);font-weight:600;font-size:clamp(34px,3.4vw,48px);line-height:1.02;letter-spacing:-.03em;margin:18px 0}
+.svc-text p{margin:0;font-size:18px;line-height:1.55;color:var(--ink-muted);max-width:460px}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.checks li{display:flex;gap:12px;align-items:center;font-size:16px}
+.check{width:26px;height:26px;flex:none;border-radius:50%;background:var(--mint-tint);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center}
+.visual{border-radius:32px;padding:40px;min-height:460px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.visual[hidden]{display:none}
+@media (max-width:520px){.svc-text,.visual{padding:28px}}
+.week{position:relative;width:100%;max-width:440px;background:#fff;border-radius:24px;padding:24px;box-shadow:0 24px 60px rgba(8,31,28,.12)}
+.week-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.week-grid .c{height:34px;border-radius:9px;background:var(--paper-alt)}
+.week-grid .c.f{background:var(--accent);animation:pop .5s var(--ease) both}
+.crm{width:100%;max-width:480px}
+.crm-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.chip{height:56px;border-radius:14px;background:#fff;display:flex;align-items:center;padding:0 12px;font-size:13px}
+.flow{position:relative;display:flex;flex-direction:column;gap:14px;width:100%;max-width:360px}
+.flow div{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:15px;animation:pop .5s var(--ease) both}
+.flow b{width:32px;height:32px;flex:none;border-radius:50%;background:var(--accent);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:500}
+
+/* un día */
+.progress{position:relative;height:4px;border-radius:2px;background:var(--border);margin-bottom:32px;overflow:hidden}
+.progress i{position:absolute;left:0;top:0;bottom:0;width:25%;background:var(--accent);border-radius:2px;transition:width .6s var(--ease)}
+.moments{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.moment{text-align:left;font-family:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:32px 28px;min-height:300px;display:flex;flex-direction:column;gap:14px;cursor:pointer;transition:transform .4s var(--ease),background .3s,color .3s}
+.moment .time{font-family:var(--serif);font-weight:600;font-size:56px;line-height:1;letter-spacing:-.03em;color:var(--text-muted)}
+.moment .title{font-size:19px;font-weight:600;line-height:1.3}
+.moment .txt{font-size:15px;line-height:1.55;color:var(--text-muted)}
+.moment[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--ink);transform:translateY(-8px)}
+.moment[aria-pressed="true"] .time{color:var(--ink)}
+.moment[aria-pressed="true"] .txt{color:#0D3930}
+
+/* proceso */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+.step{padding:40px 36px;border-radius:32px;min-height:340px;display:flex;flex-direction:column;justify-content:space-between}
+.step .num{font-family:var(--serif);font-weight:500;font-style:italic;font-size:96px;line-height:1}
+.step h3{font-family:var(--serif);font-weight:600;font-size:32px;letter-spacing:-.02em;margin:0 0 10px}
+.step p{margin:0;font-size:16px;line-height:1.6}
+
+/* contacto */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:56px;align-items:start}
+.contact-links{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.mail{font-size:15px;color:var(--text-soft);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--accent)}
+.mail:hover{color:var(--text)}
+.form{padding:40px;border-radius:32px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:20px}
+@media (max-width:520px){.form{padding:24px}}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px}
+.form label{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--text-soft)}
+.form input,.form textarea{padding:0 16px;border-radius:14px;border:1px solid var(--border);background:var(--ink);color:var(--text);font-family:inherit;font-size:16px}
+.form input{height:52px}
+.form textarea{padding:14px 16px;resize:vertical;min-height:120px}
+.form input::placeholder,.form textarea::placeholder{color:#5F7F79}
+.form input:focus,.form textarea:focus{border-color:var(--accent);outline:none}
+.form-error{margin:0;padding:12px 16px;border-radius:14px;background:#3A2420;color:#F7B4A8;font-size:14px;line-height:1.5}
+.submit{height:56px;border-radius:999px;border:none;background:var(--text);color:var(--ink);font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+.submit:disabled{opacity:.6;cursor:wait}
+.thanks{padding:48px 40px;border-radius:32px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:18px}
+.thanks h3{font-family:var(--serif);font-weight:600;font-size:40px;line-height:1.05;letter-spacing:-.03em;margin:0}
+.hp{position:absolute;left:-9999px}
+footer.foot{max-width:1240px;margin:112px auto 0;padding-top:32px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px}
+
+/* whatsapp flotante (mobile) */
+.wa-float{position:fixed;right:18px;bottom:18px;z-index:50;width:58px;height:58px;border-radius:50%;background:var(--accent);color:var(--ink);display:none;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(8,31,28,.3)}
+@media (max-width:860px){.wa-float{display:inline-flex}}
+</style>
+</head>
+<body>
+<div id="root">
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#inicio" class="logo" aria-label="GoMedic, inicio"><span class="dot"></span><span class="w">GoMedic</span></a>
+    <nav class="navlinks" aria-label="Principal">
+      <a href="#servicios">Qué hacemos</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#proceso">Proceso</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="nav-actions">
+      <button type="button" class="icon-btn" id="pauseBtn" aria-label="Pausar animaciones" title="Pausar animaciones">
+        <svg id="icoPause" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+        <svg id="icoPlay" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M7 4l13 8-13 8z"/></svg>
+      </button>
+      <a class="icon-btn wa-link" href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp" title="WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C3 15.8 2.5 14 2.5 12.2 2.5 6.9 6.8 2.6 12 2.6c2.5 0 4.9 1 6.7 2.8 1.8 1.8 2.8 4.2 2.8 6.7 0 5.3-4.3 9.7-9.5 9.7zm8.1-17.8C18 1.9 15.1.7 12 .7 5.7.7.6 5.8.6 12.1c0 2 .5 4 1.5 5.7L.5 23.3l5.6-1.5c1.7.9 3.6 1.4 5.5 1.4 6.3 0 11.4-5.1 11.4-11.4 0-3-1.2-5.9-3.4-8z"/></svg>
+      </a>
+      <a href="#contacto" class="btn btn-ink btn-sm nav-cta"><span class="nav-cta-text">Consultar</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section id="inicio" class="hero">
+  <div class="wrap">
+    <span class="pill mono"><span class="dot pulse"></span>Sistemas de IA para clínicas</span>
+    <h1 class="h1">Tu clínica,<br><span class="underline">automatizada.<svg viewBox="0 0 500 40" preserveAspectRatio="none" aria-hidden="true"><path d="M6 26 C 90 10, 200 8, 300 16 S 440 30, 494 12" fill="none" stroke="#2FD9A8" stroke-width="12" stroke-linecap="round"/></svg></span></h1>
+    <p class="lead">Turnos, pacientes y seguimiento funcionando solos, mientras tu equipo se dedica a lo que importa: atender.</p>
+    <div class="cta-row">
+      <a href="#contacto" class="btn btn-ink btn-lg">Contanos de tu clínica
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#como-funciona" class="btn btn-outline btn-lg">Ver cómo funciona</a>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="blob" aria-hidden="true" style="width:520px;height:520px;background:var(--accent);left:-140px;bottom:-260px"></div>
+    <div class="blob" aria-hidden="true" style="width:260px;height:260px;background:var(--peach);right:-60px;top:-80px"></div>
+    <div class="blob" aria-hidden="true" style="width:22px;height:22px;background:var(--ink);right:26%;top:70px"></div>
+
+    <div class="fcard agenda float hide-sm" aria-hidden="true">
+      <div class="head"><span class="mono" style="font-size:11px;color:var(--ink-muted)">Agenda</span><span style="font-size:13px;font-weight:600">Jueves 16</span></div>
+      <div class="rows">
+        <div class="row"><span class="t">09:00</span><span class="slot">M. Rodríguez</span></div>
+        <div class="row"><span class="t">10:30</span>
+          <span class="slot free" id="slotFree">Disponible</span>
+          <span class="slot ok pop" id="slotOk" hidden><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>Dra. Pérez</span>
+        </div>
+        <div class="row"><span class="t">12:00</span><span class="slot">L. Fernández</span></div>
+        <div class="row"><span class="t">15:00</span><span class="slot free">Disponible</span></div>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="body"><div class="screen">
+        <div class="chat-head">
+          <span class="avatar">G</span>
+          <span style="display:flex;flex-direction:column">
+            <span style="color:var(--text);font-size:15px;font-weight:600">GoMedic Asistente</span>
+            <span style="color:var(--accent-light);font-size:12px;display:inline-flex;align-items:center;gap:6px"><span class="dot" style="width:6px;height:6px"></span>en línea</span>
+          </span>
+        </div>
+        <div class="chat-msgs" id="chat" aria-live="polite" aria-label="Ejemplo de conversación con el asistente"></div>
+        <div class="chat-input" aria-hidden="true">Escribí un mensaje…</div>
+      </div></div>
+    </div>
+
+    <div class="fcard hours float hide-sm" aria-hidden="true">
+      <div class="serif" style="font-weight:600;font-size:56px;line-height:1;letter-spacing:-.03em;color:var(--accent)">+20h</div>
+      <div style="margin-top:10px;font-size:14px;line-height:1.45;color:var(--text-soft)">por semana que vuelven a tu equipo médico.</div>
+    </div>
+
+    <div class="fcard reminder float hide-sm" aria-hidden="true">
+      <span style="width:34px;height:34px;border-radius:50%;background:var(--mint-tint);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></span>
+      <span style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">Recordatorio enviado</span><span style="font-size:12px;color:var(--ink-muted)">32 pacientes de mañana</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- DATOS -->
+<section class="sec dark" id="datos" style="padding-top:112px;padding-bottom:112px">
+  <div class="wrap">
+    <div class="stats-head reveal">
+      <h2 class="serif" style="font-weight:600;font-size:clamp(40px,5vw,72px);line-height:1;letter-spacing:-.03em;margin:0;max-width:720px">Datos antes que <em class="k dark-em">adjetivos.</em></h2>
+      <p class="dmuted" style="margin:0;max-width:360px;font-size:16px;line-height:1.6">Lo que medimos en cada clínica donde implementamos el sistema.</p>
+    </div>
+    <div class="stats" id="stats">
+      <div class="stat"><div class="n">+<b data-to="20" style="font-weight:inherit">20</b><span>h</span></div><div class="l">liberadas por semana</div></div>
+      <div class="stat"><div class="n">+<b data-to="35" style="font-weight:inherit">35</b><span>%</span></div><div class="l">más turnos reservados</div></div>
+      <div class="stat"><div class="n">&lt;1<span>min</span></div><div class="l">de tiempo de respuesta</div></div>
+      <div class="stat"><div class="n">24<span>/7</span></div><div class="l">atención disponible</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="sec" id="servicios">
+  <div class="wrap">
+    <div class="grid-2 reveal" style="align-items:end">
+      <h2 class="h2">Todo conectado.<br><em class="k light-em">Nada</em> suelto.</h2>
+      <p class="muted" style="margin:0;max-width:440px;font-size:19px;line-height:1.55">No vendemos un chatbot. Armamos el sistema completo: web, agenda y seguimiento de pacientes trabajando juntos.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Servicios" id="tabs"></div>
+
+    <div class="svc">
+      <div class="svc-text" role="tabpanel" id="svcPanel">
+        <div>
+          <span class="mono" style="font-size:12px;color:var(--accent-ink)" id="svcNum">01 / 04</span>
+          <h3 id="svcTitle"></h3>
+          <p id="svcText"></p>
+        </div>
+        <ul class="checks" id="svcPoints"></ul>
+      </div>
+
+      <div class="visual" data-v="agenda" style="background:var(--mint-tint)" aria-hidden="true">
+        <div class="blob" style="width:240px;height:240px;background:var(--accent);right:-70px;bottom:-90px"></div>
+        <div class="week">
+          <div style="display:flex;justify-content:space-between;margin-bottom:18px;font-size:14px"><span style="font-weight:600">Semana del 13</span><span style="color:var(--accent-ink);font-weight:600">18 turnos nuevos</span></div>
+          <div class="week-grid" style="font-size:12px;color:var(--ink-muted);text-align:center;margin-bottom:8px"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span></div>
+          <div class="week-grid" id="weekGrid"></div>
+        </div>
+      </div>
+
+      <div class="visual" data-v="crm" style="background:var(--peach-tint)" aria-hidden="true" hidden>
+        <div class="crm">
+          <div class="crm-cols mono" style="font-size:11px;letter-spacing:.08em;color:#6B4A3A;margin-bottom:12px"><span>Consulta</span><span>Turno</span><span>Seguimiento</span></div>
+          <div style="position:relative;height:56px;margin-bottom:12px">
+            <div class="chip" style="position:absolute;left:0;top:0;width:calc((100% - 24px) / 3);background:var(--ink);color:var(--text);gap:10px;animation:slide 6s cubic-bezier(.65,0,.35,1) infinite"><span style="width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:11px;flex:none">AG</span>A. Gómez</div>
+          </div>
+          <div class="crm-cols">
+            <div style="display:flex;flex-direction:column;gap:10px"><span class="chip">C. Ruiz</span><span class="chip">J. Medina</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px"><span class="chip">S. Torres</span></div>
+            <div style="display:flex;flex-direction:column;gap:10px"><span class="chip">R. Díaz</span><span class="chip">P. Luna</span><span class="chip">E. Sosa</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="visual" data-v="auto" style="background:var(--ink)" aria-hidden="true" hidden>
+        <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px dashed var(--border);animation:spin 40s linear infinite"></div>
+        <div class="flow">
+          <div style="animation-delay:0s"><b>01</b>El paciente escribe</div>
+          <div style="animation-delay:.15s"><b>02</b>La IA entiende el pedido</div>
+          <div style="animation-delay:.3s"><b>03</b>Consulta la agenda real</div>
+          <div style="animation-delay:.45s"><b>04</b>Confirma y agenda el recordatorio</div>
+        </div>
+      </div>
+
+      <div class="visual" data-v="web" style="background:var(--paper-alt)" aria-hidden="true" hidden>
+        <div style="width:100%;max-width:460px;border-radius:20px;background:#fff;box-shadow:0 24px 60px rgba(8,31,28,.12);overflow:hidden;transform:rotate(-2deg)">
+          <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--paper-alt)">
+            <span style="width:9px;height:9px;border-radius:50%;background:#EF6B57"></span><span style="width:9px;height:9px;border-radius:50%;background:#F0B255"></span><span style="width:9px;height:9px;border-radius:50%;background:var(--accent)"></span>
+            <span style="margin-left:10px;flex:1;height:24px;border-radius:999px;background:var(--paper);font-size:11px;color:var(--ink-muted);display:flex;align-items:center;padding:0 12px">tuclinica.com</span>
+          </div>
+          <div style="padding:32px 28px">
+            <div class="serif" style="font-weight:600;font-size:32px;line-height:1.05;letter-spacing:-.02em">Cardiología<br>de alta complejidad</div>
+            <div style="margin-top:12px;height:8px;width:70%;border-radius:4px;background:var(--paper-alt)"></div>
+            <div style="margin-top:8px;height:8px;width:52%;border-radius:4px;background:var(--paper-alt)"></div>
+            <span class="pulse" style="margin-top:24px;display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:999px;background:var(--accent);color:var(--ink);font-size:14px;font-weight:600;animation-duration:2s">Reservar turno</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UN DÍA EN TU CLÍNICA -->
+<section class="sec dark round" id="como-funciona">
+  <div class="wrap">
+    <span class="mono" style="font-size:12px;color:var(--accent-light)">Un día en tu clínica</span>
+    <h2 class="h2 reveal" style="margin:20px 0 72px;max-width:1000px">La IA trabaja <em class="k dark-em">mientras</em> vos atendés.</h2>
+    <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+    <div class="moments" id="moments"></div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="sec round overlap" id="proceso" style="background:var(--paper)">
+  <div class="wrap">
+    <h2 class="h2 reveal" style="margin-bottom:64px">Tres pasos.<br>Sin <em class="k light-em">vueltas.</em></h2>
+    <div class="steps">
+      <div class="step reveal" style="background:#fff;border:1px solid var(--card-line)">
+        <span class="num" style="color:var(--accent-ink)">01</span>
+        <div><h3>Diagnóstico</h3><p class="muted">Vemos cómo agendás hoy y dónde se pierden tiempo y pacientes.</p></div>
+      </div>
+      <div class="step reveal" style="background:var(--mint-tint)">
+        <span class="num" style="color:var(--accent-ink)">02</span>
+        <div><h3>Implementación</h3><p style="color:#2E4440">Construimos la web, la agenda y las automatizaciones, todo conectado.</p></div>
+      </div>
+      <div class="step reveal" style="background:var(--peach-tint)">
+        <span class="num" style="color:#8A4B2E">03</span>
+        <div><h3>Seguimiento</h3><p style="color:#5A3D2F">Medimos resultados y ajustamos el sistema con el uso real.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="sec dark round" id="contacto" style="padding-bottom:64px">
+  <div class="wrap contact-grid">
+    <div>
+      <h2 class="h2 reveal" style="font-size:clamp(48px,6.4vw,96px);line-height:.96">Contanos cómo trabaja tu clínica <em class="k dark-em">hoy.</em></h2>
+      <p class="dmuted" style="margin:28px 0 40px;font-size:18px;line-height:1.6;max-width:440px">En una charla corta vemos si GoMedic encaja con tu equipo. Sin compromiso.</p>
+      <div class="contact-links">
+        <a href="#" class="btn btn-accent btn-lg wa-link" target="_blank" rel="noopener">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.4A8.4 8.4 0 1 1 21 11.5z"/></svg>
+          Escribinos por WhatsApp</a>
+        <a class="mail" href="mailto:juanpablo@gomedicagency.com">juanpablo@gomedicagency.com</a>
+      </div>
+      <p class="dmuted" style="margin:28px 0 0;display:inline-flex;align-items:center;gap:10px;font-size:14px"><span class="dot pulse" style="width:7px;height:7px"></span>Respondemos en menos de 24 hs.</p>
+    </div>
+
+    <div>
+      <div class="thanks pop" id="thanks" role="status" hidden>
+        <span style="width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--ink);display:inline-flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span>
+        <h3>¡Gracias! Ya recibimos tu consulta.</h3>
+        <p class="dmuted" style="margin:0;font-size:17px;line-height:1.6">Te respondemos en menos de 24 hs. Si es urgente, escribinos por <a href="#" class="wa-link" target="_blank" rel="noopener" style="color:var(--accent-light)">WhatsApp</a>.</p>
+      </div>
+      <form class="form" id="form" novalidate>
+        <div class="form-row">
+          <label>Tu nombre<input type="text" name="nombre" required autocomplete="name" placeholder="Dra. Ana Pérez"></label>
+          <label>Clínica<input type="text" name="clinica" required autocomplete="organization" placeholder="Nombre de la clínica"></label>
+        </div>
+        <label>Email<input type="email" name="email" required autocomplete="email" placeholder="tu@clinica.com"></label>
+        <label>¿Cómo gestionan los turnos hoy?<textarea name="mensaje" rows="4" placeholder="Contanos brevemente…"></textarea></label>
+        <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="form-error" id="formError" role="alert" hidden></p>
+        <button type="submit" class="submit" id="submitBtn"><span id="submitLabel">Enviar consulta</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <span class="logo" style="color:var(--text)"><span class="dot" style="width:8px;height:8px"></span><span class="w" style="font-size:20px">GoMedic</span></span>
+    <span class="dmuted" style="font-size:14px">Sistemas de IA para clínicas · © <span id="year">2026</span> GoMedic</span>
+  </footer>
+</section>
+</main>
+
+<a href="#" class="wa-float wa-link" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C3 15.8 2.5 14 2.5 12.2 2.5 6.9 6.8 2.6 12 2.6c2.5 0 4.9 1 6.7 2.8 1.8 1.8 2.8 4.2 2.8 6.7 0 5.3-4.3 9.7-9.5 9.7zm8.1-17.8C18 1.9 15.1.7 12 .7 5.7.7.6 5.8.6 12.1c0 2 .5 4 1.5 5.7L.5 23.3l5.6-1.5c1.7.9 3.6 1.4 5.5 1.4 6.3 0 11.4-5.1 11.4-11.4 0-3-1.2-5.9-3.4-8z"/></svg>
+</a>
+</div>
+
+<script>
+(function () {
+  // ===== Configuración =====
+  var WHATSAPP = '5493437511564';
+  var WA_TEXT = 'Hola GoMedic, quiero consultar por mi clínica';
+  var WEBHOOK = 'https://gomedic-prueba-gomedic-n8n.6afcq3.easypanel.host/webhook/gomedic_contacto';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var root = $('#root');
+  var paused = false;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // WhatsApp
+  var waUrl = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(WA_TEXT);
+  $$('.wa-link').forEach(function (a) { a.href = waUrl; });
+  $('#year').textContent = new Date().getFullYear();
+
+  // Pausa
+  $('#pauseBtn').addEventListener('click', function () {
+    paused = !paused;
+    root.classList.toggle('paused', paused);
+    var label = paused ? 'Reanudar animaciones' : 'Pausar animaciones';
+    this.setAttribute('aria-label', label); this.title = label;
+    $('#icoPause').hidden = paused; $('#icoPlay').hidden = !paused;
+  });
+
+  // ===== Chat del hero =====
+  var msgs = [
+    { ia: false, t: '¡Hola! Quería sacar un turno con la Dra. Pérez para esta semana' },
+    { ia: true, t: 'Hola. Tengo el jueves 16 a las 10:30 o el viernes 17 a las 15:00. ¿Cuál te queda mejor?' },
+    { ia: false, t: 'Jueves 10:30, perfecto' },
+    { ia: true, t: 'Listo. Turno confirmado: jueves 16, 10:30 con la Dra. Pérez. Te recuerdo el día anterior.' }
+  ];
+  var script = [[0,0],[1,0],[1,1],[2,0],[3,0],[3,1],[4,0],[4,0],[4,0],[4,0],[4,0],[4,0]];
+  var chat = $('#chat'), shown = -1, tick = 0;
+  function renderChat(step) {
+    var s = step[0], typing = step[1];
+    if (s < shown) { chat.innerHTML = ''; shown = 0; }
+    while (shown < s) {
+      if (shown < 0) shown = 0;
+      var m = msgs[shown];
+      var b = document.createElement('div');
+      b.className = 'bubble ' + (m.ia ? 'ia' : 'p');
+      b.textContent = m.t;
+      var ty = chat.querySelector('.typing'); if (ty) ty.remove();
+      chat.appendChild(b); shown++;
+    }
+    if (shown < 0) shown = 0;
+    var t = chat.querySelector('.typing');
+    if (typing && !t) { t = document.createElement('div'); t.className = 'typing'; t.innerHTML = '<span></span><span></span><span></span>'; chat.appendChild(t); }
+    if (!typing && t) t.remove();
+    var ok = s >= 4;
+    $('#slotOk').hidden = !ok; $('#slotFree').hidden = ok;
+  }
+  if (reduced) { renderChat([4,0]); }
+  else {
+    renderChat(script[0]);
+    setInterval(function () { if (paused) return; tick = (tick + 1) % script.length; renderChat(script[tick]); }, 1300);
+  }
+
+  // ===== Cifras que cuentan =====
+  var counted = false;
+  function countUp() {
+    if (counted) return; counted = true;
+    var els = $$('#stats [data-to]'), start = performance.now();
+    els.forEach(function (e) { e.textContent = '0'; });
+    (function frame(now) {
+      var p = Math.min(1, (now - start) / 1600), k = 1 - Math.pow(1 - p, 3);
+      els.forEach(function (e) { e.textContent = Math.round(+e.dataset.to * k); });
+      if (p < 1) requestAnimationFrame(frame);
+    })(start);
+  }
+  if (!reduced && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (en) { if (en.some(function (x) { return x.isIntersecting; })) { countUp(); io.disconnect(); } }, { threshold: .3 });
+    io.observe($('#stats'));
+  }
+
+  // ===== Servicios (tabs) =====
+  var tabs = [
+    { id: 'agenda', label: 'Agendas y turnos', title: 'Turnos que se agendan solos.', text: 'Los pacientes reservan, cambian y cancelan por WhatsApp o por la web, sin que nadie de tu equipo mueva un dedo.', points: ['Disponibilidad real de cada profesional', 'Reprogramaciones automáticas', 'Menos ausencias con recordatorios'] },
+    { id: 'crm', label: 'CRM de pacientes', title: 'Cada paciente, en su etapa.', text: 'Historial, seguimiento y recordatorios en un solo lugar. Sabés dónde está cada paciente sin buscar en cinco planillas.', points: ['Historial centralizado', 'Seguimientos post-consulta', 'Alertas cuando alguien se enfría'] },
+    { id: 'auto', label: 'Automatizaciones con IA', title: 'Lo repetitivo, resuelto.', text: 'Confirmaciones, respuestas frecuentes y derivaciones, corriendo solas las 24 horas.', points: ['Entiende lenguaje natural', 'Deriva al equipo cuando hace falta', 'Responde en menos de un minuto'] },
+    { id: 'web', label: 'Web a medida', title: 'Una web que agenda.', text: 'Sitio propio, en tu dominio, pensado para convertir visitas en turnos reservados, no solo para verse lindo.', points: ['Reserva integrada a la agenda', 'Diseño acorde a tu especialidad', 'Rápida en el celular'] }
+  ];
+  var checkSvg = '<span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></span>';
+  var tabsEl = $('#tabs');
+  tabs.forEach(function (t, i) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'tab'; b.setAttribute('role', 'tab'); b.id = 'tab-' + t.id;
+    b.setAttribute('aria-controls', 'svcPanel'); b.textContent = t.label;
+    b.addEventListener('click', function () { selectTab(i); });
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        var n = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+        selectTab(n); $('#tab-' + tabs[n].id).focus();
+      }
+    });
+    tabsEl.appendChild(b);
+  });
+  var filled = [0,2,3,6,7,8,11,12,14,15,17,18,19];
+  function buildWeek() {
+    var g = $('#weekGrid'); g.innerHTML = '';
+    for (var i = 0; i < 20; i++) {
+      var c = document.createElement('span'), k = filled.indexOf(i);
+      c.className = 'c' + (k >= 0 ? ' f' : '');
+      if (k >= 0) c.style.animationDelay = (k * 0.08).toFixed(2) + 's';
+      g.appendChild(c);
+    }
+  }
+  function selectTab(i) {
+    var t = tabs[i];
+    $$('.tab', tabsEl).forEach(function (b, j) { b.setAttribute('aria-selected', j === i ? 'true' : 'false'); b.tabIndex = j === i ? 0 : -1; });
+    $('#svcPanel').setAttribute('aria-labelledby', 'tab-' + t.id);
+    $('#svcNum').textContent = '0' + (i + 1) + ' / 04';
+    $('#svcTitle').textContent = t.title;
+    $('#svcText').textContent = t.text;
+    $('#svcPoints').innerHTML = t.points.map(function (p) { return '<li>' + checkSvg + '<span></span></li>'; }).join('');
+    $$('#svcPoints li span:last-child').forEach(function (s, j) { s.textContent = t.points[j]; });
+    $$('.visual').forEach(function (v) {
+      var on = v.dataset.v === t.id; v.hidden = !on;
+      if (on) { $$('.flow div, .week-grid .c.f', v).forEach(function (el) { el.style.animationName = 'none'; void el.offsetWidth; el.style.animationName = ''; }); }
+    });
+    if (t.id === 'agenda') buildWeek();
+  }
+  selectTab(0);
+
+  // ===== Un día en tu clínica =====
+  var moments = [
+    { time: '08:00', title: 'Recordatorios enviados', text: 'Cada paciente del día recibe su recordatorio por WhatsApp. Nadie levanta el teléfono.' },
+    { time: '11:20', title: 'Un paciente reprograma', text: 'Avisa que no llega. La IA le ofrece otro horario y libera el turno para otra persona.' },
+    { time: '16:45', title: 'Seguimiento post-consulta', text: 'Indicaciones y control enviados a quienes se atendieron ayer.' },
+    { time: '23:10', title: 'Turno nuevo, clínica cerrada', text: 'Alguien reserva de noche. A la mañana ya está en la agenda.' }
+  ];
+  var mEl = $('#moments'), current = 0, locked = false;
+  moments.forEach(function (m, i) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'moment';
+    b.innerHTML = '<span class="time"></span><span class="title"></span><span class="txt"></span>';
+    b.querySelector('.time').textContent = m.time;
+    b.querySelector('.title').textContent = m.title;
+    b.querySelector('.txt').textContent = m.text;
+    b.addEventListener('click', function () { locked = true; setMoment(i); });
+    mEl.appendChild(b);
+  });
+  function setMoment(i) {
+    current = i;
+    $$('.moment', mEl).forEach(function (b, j) { b.setAttribute('aria-pressed', j === i ? 'true' : 'false'); });
+    $('#progress').style.width = ((i + 1) * 25) + '%';
+  }
+  setMoment(0);
+  if (!reduced) setInterval(function () { if (paused || locked) return; setMoment((current + 1) % 4); }, 3400);
+
+  // ===== Formulario → n8n =====
+  var form = $('#form'), err = $('#formError'), btn = $('#submitBtn'), lbl = $('#submitLabel');
+  function showError(msg) { err.textContent = msg; err.hidden = false; }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    err.hidden = true;
+    var d = new FormData(form);
+    if (d.get('website')) return; // anti-spam
+    var data = {
+      nombre: String(d.get('nombre') || '').trim(),
+      clinica: String(d.get('clinica') || '').trim(),
+      email: String(d.get('email') || '').trim(),
+      mensaje: String(d.get('mensaje') || '').trim(),
+      origen: 'landing-v2',
+      fecha: new Date().toISOString()
+    };
+    if (!data.nombre || !data.clinica || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      showError('Completá tu nombre, la clínica y un email válido.');
+      return;
+    }
+    btn.disabled = true; lbl.textContent = 'Enviando…';
+    fetch(WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); })
+      .then(function () { form.hidden = true; $('#thanks').hidden = false; })
+      .catch(function () { showError('No pudimos enviar la consulta. Probá de nuevo o escribinos por WhatsApp.'); })
+      .then(function () { btn.disabled = false; lbl.textContent = 'Enviar consulta'; });
+  });
+})();
+</script>
+</body>
+</html>
