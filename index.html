@@ -27,6 +27,7 @@
   --ease:cubic-bezier(.22,1,.36,1);
 }
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:var(--accent-ink)} a:hover{color:var(--ink)}
@@ -222,10 +223,6 @@ footer.foot{max-width:1240px;margin:112px auto 0;padding-top:32px;border-top:1px
       <a href="#contacto">Contacto</a>
     </nav>
     <div class="nav-actions">
-      <button type="button" class="icon-btn" id="pauseBtn" aria-label="Pausar animaciones" title="Pausar animaciones">
-        <svg id="icoPause" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
-        <svg id="icoPlay" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M7 4l13 8-13 8z"/></svg>
-      </button>
       <a class="icon-btn wa-link" href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp" title="WhatsApp">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.7 0-3.4-.5-4.9-1.3l-.4-.2-3.6.9 1-3.5-.2-.4C3 15.8 2.5 14 2.5 12.2 2.5 6.9 6.8 2.6 12 2.6c2.5 0 4.9 1 6.7 2.8 1.8 1.8 2.8 4.2 2.8 6.7 0 5.3-4.3 9.7-9.5 9.7zm8.1-17.8C18 1.9 15.1.7 12 .7 5.7.7.6 5.8.6 12.1c0 2 .5 4 1.5 5.7L.5 23.3l5.6-1.5c1.7.9 3.6 1.4 5.5 1.4 6.3 0 11.4-5.1 11.4-11.4 0-3-1.2-5.9-3.4-8z"/></svg>
       </a>
@@ -479,15 +476,6 @@ footer.foot{max-width:1240px;margin:112px auto 0;padding-top:32px;border-top:1px
   var waUrl = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(WA_TEXT);
   $$('.wa-link').forEach(function (a) { a.href = waUrl; });
   $('#year').textContent = new Date().getFullYear();
-
-  // Pausa
-  $('#pauseBtn').addEventListener('click', function () {
-    paused = !paused;
-    root.classList.toggle('paused', paused);
-    var label = paused ? 'Reanudar animaciones' : 'Pausar animaciones';
-    this.setAttribute('aria-label', label); this.title = label;
-    $('#icoPause').hidden = paused; $('#icoPlay').hidden = !paused;
-  });
 
   // ===== Chat del hero =====
   var msgs = [
